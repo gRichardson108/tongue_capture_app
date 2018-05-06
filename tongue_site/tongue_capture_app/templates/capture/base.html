@@ -1,0 +1,26 @@
+{% load static %}
+<html>
+<head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="{% static "tongue_capture_app/materialize/css/materialize.css" %}"  media="screen,projection"/>
+    <!--Import css for webcam overlay-->
+    <link type="text/css" rel="stylesheet" href="{% static "tongue_capture_app/capture/capture.css" %}"  media="screen,projection"/>
+    <link rel="icon" href="{% static "tongue_capture_app/favicon.png" %}">
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper">
+          <a href="/tongue_capture_app/" class="brand-logo"><img src="{% static "tongue_capture_app/favicon.png" %}"></a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="/tongue_capture_app/">Home</a></li>
+          </ul>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+    <script type="text/javascript" src="{% static "tongue_capture_app/materialize/js/materialize.js" %}"></script>
+</body>
