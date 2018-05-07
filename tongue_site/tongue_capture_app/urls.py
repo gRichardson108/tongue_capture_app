@@ -5,4 +5,5 @@ from . import views
 app_name = 'tongue_capture_app'
 urlpatterns = [
     url(r'^$', views.add_images, name='index'),
+    url(r'^upload$', views.upload_images, name='upload'),
 ]
