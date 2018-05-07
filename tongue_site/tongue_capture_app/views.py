@@ -22,4 +22,6 @@ def upload_images(request):
         # the save method prepends a header followed by a comma, then the data, so we strip it out first
         imgUrl = imgUrl.split(',')[1] 
         imageObject.put(Body=base64.b64decode(imgUrl),ContentType='image/png')
-    return HttpResponseRedirect(reverse('tongue_capture_app:index'))
+        return HttpResponse(status=204)
+    else:
+        return HttpResponseRedirect(reverse('tongue_capture_app:index'))
