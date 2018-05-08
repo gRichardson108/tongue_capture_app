@@ -18,9 +18,12 @@
           </ul>
         </div>
     </nav>
-
+    <script>
+            var csrftoken = '{{ csrf_token }}';
+        </script>
     {% block content %}
     {% endblock %}
-
+    {% block pagescript %}
+    {% endblock %}
     <script type="text/javascript" src="{% static "tongue_capture_app/materialize/js/materialize.js" %}"></script>
 </body>

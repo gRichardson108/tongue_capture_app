@@ -1,70 +1,12 @@
 {% extends 'capture/base.html' %} {% block content %}
-
-<video id="video" width="640" height="480" autoplay></video>
+{% load static %}
+<video id="video" autoplay></video>
 <button id="snap">Snap Photo</button>
-<canvas id="canvas" width="640" height="480"></canvas>
-<canvas id="overlay" width="640" height="480">text
-</canvas>
-
-<script>
-    // Grab elements, create settings, etc.
-    var video = document.getElementById('video');
-
-    // Get access to the camera!
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        // Not adding `{ audio: true }` since we only want video now
-        navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
-            video.src = window.URL.createObjectURL(stream);
-            video.play();
-        });
-    }
-
-    // Elements for taking the snapshot
-    var canvas = document.getElementById('canvas');
-    var context = canvas.getContext('2d');
-    var video = document.getElementById('video');
-    var overlay = document.getElementById('overlay');
-
-    // Trigger photo take
-    document.getElementById("snap").addEventListener("click", function () {
-        context.drawImage(video, 0, 0, 640, 480);
-        var dataURL = canvas.toDataURL();
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'upload');
-        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-        xhr.setRequestHeader("Content-Type", 'application/json');
-        xhr.send(JSON.stringify({
-            imgUrl : dataURL
-        }));
-    });
-
-    // make overlay over video
-    overlay.width = video.width;
-    overlay.height = video.height;
-    overlay.style.top = video.offsetTop;
-    overlay.style.left = video.offsetLeft;
-
-    // draw test shape on overlay
-    if (overlay.getContext){
-        var ctx = overlay.getContext('2d');
-        const horizontalSpacing = 100;
-        const radius = 25;
-        var verticalCenter = overlay.height * 0.5;
-        var horizontalLeft = overlay.width * 0.5 - horizontalSpacing;
-        var horizontalRight = overlay.width * 0.5 + horizontalSpacing;
-        console.log(typeof horizontalLeft + " width: " + horizontalLeft);
-        console.log(typeof verticalCenter + " height: " + verticalCenter);
-        
-        ctx.beginPath();
-        ctx.arc(horizontalLeft,verticalCenter,radius,0,2*Math.PI);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(horizontalRight,verticalCenter,radius,0,2*Math.PI);
-        ctx.stroke();
-        // ctx.fillRect(25, 25, 100, 100);
-        // ctx.clearRect(45, 45, 60, 60);
-        // ctx.strokeRect(50, 50, 50, 50);
-    }
-</script> 
+<canvas id="overlay">text</canvas>
+<canvas id="canvas">text</canvas>
+<div style=""><img id="source" src="{% static "tongue_capture_app/capture/face_outline.png" %}" height="100px" width="70px"></div>
+<div id="cameratype"></div>
+{% endblock %}
+{% block pagescript %}
+<script src="{% static "tongue_capture_app/capture/capture.js" %}"></script>
 {% endblock %}

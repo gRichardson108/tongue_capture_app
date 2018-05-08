@@ -25,8 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    u'localhost',
-    u'127.0.0.1'
+    '*'
 ]
 
 
@@ -40,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
