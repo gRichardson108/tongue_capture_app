@@ -25,8 +25,6 @@ function getCamera(video){
                 setTimeout(function () {
                     video.style.cssText = "-moz-transform: scale(-1, 1);-webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1);transform: scale(-1, 1); filter: FlipH;";
                     console.log("Camera dimensions: x=" + video.videoWidth + " y=" + video.videoHeight);
-                    video.width = video.videoWidth;
-                    video.height = video.videoHeight;
                     setupOverlay(video);
                 }, 500);
             });
@@ -53,35 +51,18 @@ function getCamera(video){
 getCamera(video);
 
 // Trigger photo take
-document.getElementById("snap").addEventListener("click", function () {
-    var canvas = document.getElementById('canvas');
-    canvas.width = video.width;
-    canvas.height = video.height;
-    canvas.style.cssText = "-moz-transform: scale(-1, 1);-webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1);transform: scale(-1, 1); filter: FlipH;";
-    var context = canvas.getContext('2d');
-
-    context.drawImage(video, 0, 0, video.width, video.height);
-    var dataURL = canvas.toDataURL();
-    var xhr = new XMLHttpRequest();
-    xhr.addEventListener('load', uploadFinished());
-    xhr.open('POST', 'upload');
-    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-    xhr.setRequestHeader("Content-Type", 'application/json');
-    xhr.send(JSON.stringify({
-        imgUrl : dataURL
-    }));
-});
+document.getElementById("snap").addEventListener("click", showSnapshot);
+document.getElementById("canvas").addEventListener("click", hideSnapshot);
 
 function setupOverlay(video){
     // Elements for taking the snapshot
-    var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     var video = document.getElementById('video');
     var overlay = document.getElementById('overlay');
 
     // make overlay over video
-    overlay.width = video.width;
-    overlay.height = video.height;
+    overlay.width = video.videoWidth;
+    overlay.height = video.videoHeight;
     overlay.style.top = video.offsetTop;
     overlay.style.left = video.offsetLeft;
 
@@ -90,9 +71,9 @@ function setupOverlay(video){
         var ctx = overlay.getContext('2d');
         const boxWidth = 120;
         const boxHeight = 80;
-        var leftCorner = (video.width * 0.5) - (boxWidth * 0.5);
+        var leftCorner = (video.videoWidth * 0.5) - (boxWidth * 0.5);
         // if vertical aspect ratio, we place the box lower down
-        var topCorner = (video.height > video.width? (video.height * 0.65):(video.height * 0.5));
+        var topCorner = (video.videoHeight > video.videoWidth? (video.videoHeight * 0.65):(video.videoHeight * 0.5));
 
         MOUTHRECTANGLE = {
             x : leftCorner,
@@ -112,7 +93,37 @@ function setupOverlay(video){
     drawFace(overlay);
 }
 
+function showSnapshot(){
+    document.getElementById("snap").disabled = true;
+    var canvas = document.getElementById('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.style.cssText = "display:none;";
+    var context = canvas.getContext('2d');
 
+    context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+    var dataURL = canvas.toDataURL();
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', uploadFinished);
+    xhr.addEventListener('error', uploadError);
+    xhr.open('POST', 'upload');
+    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    xhr.setRequestHeader("Content-Type", 'application/json');
+    xhr.send(JSON.stringify({
+        imgUrl : dataURL
+    }));
+    function uploadFinished(event){
+        canvas.style.cssText = "-moz-transform: scale(-1, 1);-webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1);transform: scale(-1, 1); filter: FlipH;";
+        document.getElementById("snap").disabled = false;
+    }
+    function uploadError(event){
+        alert('An error occurred while uploading the image. ' + event.target + ' ' + event.type + ' ' + event.detail);
+    }
+}
+function hideSnapshot(){
+    var canvas = document.getElementById('canvas');
+    canvas.style.cssText = "display:none;"
+}
 
 function drawTongueTarget(overlay, location){
     var ctx = overlay.getContext('2d');
@@ -127,8 +138,4 @@ function drawTongueTarget(overlay, location){
 function clearCanvas(overlay){
     var ctx = overlay.getContext('2d');
     ctx.clearRect(0, 0, overlay.width, overlay.height);
-}
-
-function uploadFinished(){
-
 }

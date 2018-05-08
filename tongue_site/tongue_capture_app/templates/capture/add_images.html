@@ -1,10 +1,10 @@
 {% extends 'capture/base.html' %} {% block content %}
 {% load static %}
-<video id="video" autoplay></video>
-<button id="snap">Snap Photo</button>
-<canvas id="overlay">text</canvas>
+<video id="video" class="responsive-video" autoplay></video>
+<button id="snap" class="fixed-action-btn btn-large red" style="position:absolute;margin: 0 auto;bottom:5%;"><i class="large material-icons" style="font-size: 100px">photo_camera</i></button>
+<canvas id="overlay" class="responsive-video">text</canvas>
 <canvas id="canvas">text</canvas>
-<div style=""><img id="source" src="{% static "tongue_capture_app/capture/face_outline.png" %}" height="100px" width="70px"></div>
+<div style="display:none"><img id="source" src="{% static "tongue_capture_app/capture/face_outline.png" %}" height="100px" width="70px"></div>
 <div id="cameratype"></div>
 {% endblock %}
 {% block pagescript %}
