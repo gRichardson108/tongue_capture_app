@@ -99,7 +99,7 @@ function getCamera(video){
                 console.log('Device does not support enumerating input devices.');
             }
         }).catch(function(err){
-            alert("Your device camera cannot be opened. Make sure you're using a modern browser and that you've allowed camera access.\n\nYou may also need to close other tabs or applications that access your webcam.")
+            alert("Your device does not meet the minimum camera requirements.")
         });
     }
 }
