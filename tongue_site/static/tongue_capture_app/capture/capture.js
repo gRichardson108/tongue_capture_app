@@ -10,6 +10,8 @@ var WORKFLOW; //we define this after the camera is loaded
 
 var currentStep = 0;
 
+var frames = []
+
 function setNextStep(){
     currentStep++;
     if (currentStep >= WORKFLOW.length){
@@ -20,11 +22,11 @@ function setNextStep(){
 }
 
 function finish(){
-    window.location.href = "https://goo.gl/forms/MRcpP77aMveVcvd92";
+    window.location.href = "/thankyou";
 }
 
 function showCurrentStep(){
-    document.getElementById("instructions").innerText = WORKFLOW[currentStep].description;
+    //document.getElementById("instructions").innerText = WORKFLOW[currentStep].description;
     clearCanvas();
     setupOverlay();
     drawTongueTarget(WORKFLOW[currentStep].location);
@@ -99,14 +101,14 @@ function getCamera(video){
                 console.log('Device does not support enumerating input devices.');
             }
         }).catch(function(err){
-            alert("Your device does not meet the minimum camera requirements.")
+            alert("Your device camera cannot be opened. Make sure you're using a modern browser and that you've allowed camera access.\n\nYou may also need to close other tabs or applications that access your webcam.")
         });
     }
 }
 getCamera(video);
 
 // Trigger photo take
-document.getElementById("snap").addEventListener("click", showSnapshot);
+document.getElementById("snap").addEventListener("click", takesnapshots);
 document.getElementById("canvas").addEventListener("click", hideSnapshot);
 
 function setupOverlay(video){
@@ -147,17 +149,28 @@ function setupOverlay(video){
     }
     drawFace(overlay);
 }
-
-function showSnapshot(){
+function takesnapshots(){
+    takeNsnapshots(5);
+}
+function takeNsnapshots(numSnapshots){
     document.getElementById("snap").disabled = true;
     var canvas = document.getElementById('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.style.cssText = "display:none;";
     var context = canvas.getContext('2d');
-
     context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-    var dataURL = canvas.toDataURL();
+    frames.push(canvas.toDataURL());
+    if (frames.length < numSnapshots){
+        setTimeout(function(){
+            takeNsnapshots(numSnapshots);
+        }, 1000/numSnapshots);
+    } else {
+        uploadImages();
+    }
+}
+
+function uploadImages(){
     var xhr = new XMLHttpRequest();
     xhr.addEventListener('load', uploadFinished);
     xhr.addEventListener('error', uploadError);
@@ -165,7 +178,7 @@ function showSnapshot(){
     xhr.setRequestHeader("X-CSRFToken", csrftoken);
     xhr.setRequestHeader("Content-Type", 'application/json');
     xhr.send(JSON.stringify({
-        imgUrl : dataURL,
+        imgUrls : frames,
         metadata : {
             'cameratype' : document.getElementById("cameratype").innerText,
             'videoWidth' : video.videoWidth,
@@ -176,8 +189,9 @@ function showSnapshot(){
         direction : WORKFLOW[currentStep].direction
     }));
     function uploadFinished(event){
-        canvas.style.cssText = "-moz-transform: scale(-1, 1);-webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1);transform: scale(-1, 1); filter: FlipH;";
+        //canvas.style.cssText = "-moz-transform: scale(-1, 1);-webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1);transform: scale(-1, 1); filter: FlipH;";
         document.getElementById("snap").disabled = false;
+        frames = [];
         setNextStep();
     }
     function uploadError(event){
@@ -185,6 +199,7 @@ function showSnapshot(){
         document.getElementById("snap").disabled = false;
     }
 }
+
 function hideSnapshot(){
     var canvas = document.getElementById('canvas');
     canvas.style.cssText = "display:none;"

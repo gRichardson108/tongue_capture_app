@@ -1,0 +1,48 @@
+{% extends 'capture/base.html' %} {% block content %} {% load static %}
+<div class="col s12 m6">
+    <h3 id="prerequisites">Prerequisites</h3>
+
+    <ol>
+        <li>
+            <p>A device with a webcam (mobile phone is OK).</p>
+        </li>
+
+        <li>
+            <p>A modern web browser.
+                <br /> a. Supported desktop browsers: Chrome 53 or later, MS Edge, Firefox 36 or later, Opera 40 or later, Safari
+                11 or later.</p>
+
+            <p>b. Supported mobile browsers: Android Webview 53 or later, Chrome 53 or later, Edge, Firefox 36 or later, Opera
+                Mobile 40 or later, Safari Mobile 11 or later.</p>
+        </li>
+    </ol>
+
+    <h3 id="instructions">Instructions</h3>
+
+    <p>These instructions will walk you through capturing images of your tongue in various positions for use in our classifier.</p>
+
+    <ol>
+        <li>When you open the page, it will request access to your webcam. Make sure to
+            <em>allow access</em>. If you instead get a message indicating your device isn't supported, switch to a browser or
+            device that meets the prerequisites above.</li>
+
+        <li>You will see your camera input on the screen, with an overlaid green box and a red dot. Position the camera so the
+            green box overlays your mouth.</li>
+
+        <li>Open your mouth (at a comfortable angle), and point your tongue at the red dot while keeping the green box in position.
+
+            <li>Hold your tongue position and click or tap the camera button. It will turn gray while it captures and uploads
+                the images.</li>
+
+            <li>Once the camera button lights back up, the red dot will move to the next position. Repeat steps 2-4 until the
+                site redirects you to the "Thank you" page.</li>
+    </ol>
+    <a onclick="(document.getElementById('instrimage').style.display == 'block'? document.getElementById('instrimage').style.display = 'none': document.getElementById('instrimage').style.display = 'block');">
+        Click to show image.</a>
+    <img style="display:none;" id="instrimage" class="animated-gif" src="{% static "tongue_capture_app/capture/instructions.gif" %}">
+    </li>
+
+    <hr>
+    <a class="waves-effect waves-light btn" href="/capture"><i class="material-icons right">arrow_forward</i>Start capturing images</a>
+</div>
+{% endblock %}

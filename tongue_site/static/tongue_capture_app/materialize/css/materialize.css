@@ -2720,6 +2720,11 @@ i.large {
   font-size: 6rem;
 }
 
+img.animated-gif{
+  width: 200px;
+  height: auto;
+}
+
 canvas.responsive-video,
 img.responsive-img,
 video.responsive-video {
